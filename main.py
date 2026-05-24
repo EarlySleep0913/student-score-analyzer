@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib
+import numpy as np
 
 matplotlib.rcParams['font.sans-serif'] = ['SimHei']
 matplotlib.rcParams['axes.unicode_minus'] = False
@@ -147,6 +148,79 @@ def plot_total_ranking(df):
     plt.close()
 
 
+def plot_student_radar(df):
+    num_vars = len(SUBJECTS)
+    angles = np.linspace(0, 2 * np.pi, num_vars, endpoint=False).tolist()
+    angles += angles[:1]
+
+    fig, axes = plt.subplots(4, 5, figsize=(20, 16), subplot_kw=dict(polar=True))
+    fig.suptitle('学生各科成绩雷达图', fontsize=16, y=1.02)
+
+    for idx, (_, row) in enumerate(df.iterrows()):
+        ax = axes[idx // 5][idx % 5]
+        values = [row[subj] for subj in SUBJECTS]
+        values += values[:1]
+
+        color = GRADE_COLORS[row['等级']]
+        ax.fill(angles, values, alpha=0.25, color=color)
+        ax.plot(angles, values, 'o-', color=color, linewidth=2)
+        ax.set_xticks(angles[:-1])
+        ax.set_xticklabels(SUBJECTS, fontsize=8)
+        ax.set_ylim(0, 100)
+        ax.set_yticks([20, 40, 60, 80, 100])
+        ax.set_yticklabels(['20', '40', '60', '80', '100'], fontsize=6)
+        ax.set_title(f"{row['姓名']}({row['等级']})", fontsize=10, pad=10)
+
+    plt.tight_layout()
+    plt.savefig(os.path.join(OUTPUT_DIR, 'student_radar.png'), dpi=150, bbox_inches='tight')
+    plt.close()
+
+
+def plot_boxplot(df):
+    fig, ax = plt.subplots(figsize=(10, 6))
+    data = [df[subj] for subj in SUBJECTS]
+    bp = ax.boxplot(data, tick_labels=SUBJECTS, patch_artist=True)
+
+    colors = ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#F44336']
+    for patch, color in zip(bp['boxes'], colors):
+        patch.set_facecolor(color)
+        patch.set_alpha(0.7)
+
+    ax.set_title('各科成绩箱线图', fontsize=14)
+    ax.set_xlabel('科目')
+    ax.set_ylabel('分数')
+    ax.set_ylim(40, 105)
+    ax.grid(axis='y', alpha=0.3)
+
+    plt.tight_layout()
+    plt.savefig(os.path.join(OUTPUT_DIR, 'score_boxplot.png'), dpi=150)
+    plt.close()
+
+
+def plot_correlation_heatmap(df):
+    corr = df[SUBJECTS].corr()
+
+    fig, ax = plt.subplots(figsize=(8, 6))
+    im = ax.imshow(corr, cmap='RdYlGn', vmin=0, vmax=1)
+
+    ax.set_xticks(range(len(SUBJECTS)))
+    ax.set_yticks(range(len(SUBJECTS)))
+    ax.set_xticklabels(SUBJECTS)
+    ax.set_yticklabels(SUBJECTS)
+
+    for i in range(len(SUBJECTS)):
+        for j in range(len(SUBJECTS)):
+            ax.text(j, i, f'{corr.iloc[i, j]:.2f}', ha='center', va='center',
+                    color='white' if corr.iloc[i, j] > 0.5 else 'black', fontsize=12)
+
+    ax.set_title('各科成绩相关性热力图', fontsize=14)
+    plt.colorbar(im, ax=ax, label='相关系数')
+
+    plt.tight_layout()
+    plt.savefig(os.path.join(OUTPUT_DIR, 'correlation_heatmap.png'), dpi=150)
+    plt.close()
+
+
 def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
@@ -163,6 +237,9 @@ def main():
     plot_score_distribution(df)
     plot_subject_avg(df)
     plot_total_ranking(df)
+    plot_student_radar(df)
+    plot_boxplot(df)
+    plot_correlation_heatmap(df)
     print(f"图表已保存至 {OUTPUT_DIR}/")
 
 
