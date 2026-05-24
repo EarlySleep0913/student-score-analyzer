@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm -f data/students.csv)",
+      "Bash(python -c ' *)",
+      "Bash(python main.py)",
+      "Bash(pip install *)",
+      "Bash(python app.py)",
+      "Bash(git add *)",
+      "Bash(git commit -m '添加 Flask Web 界面 *)",
+      "Bash(git push *)"
+    ]
+  }
+}

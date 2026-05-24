@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}对比结果 - 学生成绩分析系统{% endblock %}
+
+{% block header %}学生对比结果{% endblock %}
+{% block subtitle %}<p>{{ students|length }} 名学生的成绩对比分析</p>{% endblock %}
+
+{% block content %}
+<a href="/compare" class="back-link">← 重新选择对比</a>
+
+{% if compare_image %}
+<div class="card">
+    <div class="card-header">
+        <h2>雷达图对比</h2>
+    </div>
+    <div class="chart-container">
+        <img src="/output/{{ compare_image }}" alt="学生对比雷达图">
+    </div>
+</div>
+{% endif %}
+
+<div class="card">
+    <div class="card-header">
+        <h2>成绩对比表</h2>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>姓名</th>
+                {% for subj in subjects %}
+                <th>{{ subj }}</th>
+                {% endfor %}
+                <th>总分</th>
+                <th>平均分</th>
+                <th>等级</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <td>
+                    <a href="/student/{{ student['姓名'] }}"><strong>{{ student['姓名'] }}</strong></a>
+                </td>
+                {% for subj in subjects %}
+                <td>
+                    <span class="{% if student[subj] >= 90 %}grade-A{% elif student[subj] >= 80 %}grade-B{% elif student[subj] >= 60 %}grade-C{% else %}grade-D{% endif %}">
+                        {{ student[subj] }}
+                    </span>
+                </td>
+                {% endfor %}
+                <td><strong>{{ student['总分'] }}</strong></td>
+                <td>{{ student['平均分'] }}</td>
+                <td><span class="badge badge-{{ student['等级'] }}">{{ student['等级'] }}</span></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- 各科对比分析 -->
+<div class="card">
+    <div class="card-header">
+        <h2>各科对比分析</h2>
+    </div>
+    <div class="stats-grid">
+        {% for subj in subjects %}
+        <div class="stat-card" style="background: linear-gradient(135deg, {% if loop.index0 == 0 %}#10b981, #059669{% elif loop.index0 == 1 %}#3b82f6, #2563eb{% elif loop.index0 == 2 %}#f59e0b, #d97706{% elif loop.index0 == 3 %}#8b5cf6, #7c3aed{% else %}#ef4444, #dc2626{% endif %});">
+            <div style="font-size: 1.2em; font-weight: 600; margin-bottom: 12px;">{{ subj }}</div>
+            {% set scores = students | map(attribute=subj) | list %}
+            <div style="font-size: 0.9em; opacity: 0.9;">
+                最高: {{ scores | max }} | 最低: {{ scores | min }}
+            </div>
+            <div style="font-size: 0.85em; opacity: 0.8; margin-top: 4px;">
+                差距: {{ scores | max - scores | min }}分
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div style="text-align: center; margin-top: 20px;">
+    <a href="/compare" class="btn btn-outline">对比其他学生</a>
+    <a href="/" class="btn btn-primary" style="margin-left: 12px;">返回首页</a>
+</div>
+{% endblock %}

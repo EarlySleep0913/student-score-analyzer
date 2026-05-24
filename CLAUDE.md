@@ -4,7 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 项目概述
 
-Python 学生成绩分析项目。
+Python 学生成绩分析项目，支持命令行分析和 Web 界面展示。
+
+### 功能特性
+- 命令行分析脚本：生成统计报告和可视化图表
+- Flask Web 界面：现代化 UI，支持交互式分析
+- 学生详情页：个人雷达图、成绩排名、与平均分对比
+- 学生对比：支持多学生雷达图对比
+- 深度分析：统计指标、相关性矩阵、等级分布
+- 搜索筛选：按姓名搜索、按等级筛选
 
 ## 环境要求
 
@@ -38,9 +46,13 @@ student-score-analyzer/
 ├── data/
 │   └── students.csv     # 学生成绩数据（GBK 编码）
 ├── templates/           # HTML 模板
-│   ├── base.html        # 基础模板
-│   ├── index.html       # 首页
-│   └── student.html     # 学生详情页
+│   ├── base.html        # 基础布局模板
+│   ├── index.html       # 首页（总览、图表、学生列表）
+│   ├── student.html     # 学生详情页
+│   ├── analysis.html    # 深度分析页
+│   ├── compare_select.html  # 对比选择页
+│   ├── compare_result.html  # 对比结果页
+│   └── 404.html         # 错误页面
 └── output/              # 生成的报告和图表
 ```
 
