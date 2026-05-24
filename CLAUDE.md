@@ -9,10 +9,13 @@ Python 学生成绩分析项目，支持命令行分析和 Web 界面展示。
 ### 功能特性
 - 命令行分析脚本：生成统计报告和可视化图表
 - Flask Web 界面：现代化 UI，支持交互式分析
+- 多考试批次：支持切换不同考试（期中、期末、月考等）
 - 学生详情页：个人雷达图、成绩排名、与平均分对比
 - 学生对比：支持多学生雷达图对比
+- 成绩趋势：查看学生多次考试的成绩变化
 - 深度分析：统计指标、相关性矩阵、等级分布
 - 搜索筛选：按姓名搜索、按等级筛选
+- 数据导入导出：支持CSV和JSON格式
 
 ## 环境要求
 
@@ -22,6 +25,7 @@ Python 学生成绩分析项目，支持命令行分析和 Web 界面展示。
 ## 数据格式
 
 - 数据文件：`data/students.csv`，GBK 编码
+- 考试数据目录：`data/exams/`，包含多次考试数据
 - 字段：姓名, 数学, 英语, 物理, 化学, 生物
 
 ## 常用命令
@@ -43,8 +47,15 @@ python app.py
 student-score-analyzer/
 ├── main.py              # 分析脚本（命令行）
 ├── app.py               # Flask Web 应用
+├── create_exam_data.py  # 生成模拟考试数据
 ├── data/
-│   └── students.csv     # 学生成绩数据（GBK 编码）
+│   ├── students.csv     # 学生成绩数据（GBK 编码）
+│   └── exams/           # 考试数据目录
+│       ├── exam_list.csv    # 考试元数据
+│       ├── 期中考试.csv     # 期中考试成绩
+│       ├── 期末考试.csv     # 期末考试成绩
+│       ├── 月考一.csv       # 第一次月考成绩
+│       └── 月考二.csv       # 第二次月考成绩
 ├── templates/           # HTML 模板
 │   ├── base.html        # 基础布局模板
 │   ├── index.html       # 首页（总览、图表、学生列表）
@@ -52,6 +63,9 @@ student-score-analyzer/
 │   ├── analysis.html    # 深度分析页
 │   ├── compare_select.html  # 对比选择页
 │   ├── compare_result.html  # 对比结果页
+│   ├── trend.html       # 成绩趋势页
+│   ├── import_data.html # 数据导入导出页
+│   ├── no_data.html     # 无数据提示页
 │   └── 404.html         # 错误页面
 └── output/              # 生成的报告和图表
 ```
