@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}暂无数据 - 学生成绩分析系统{% endblock %}
+
+{% block header %}暂无考试数据{% endblock %}
+
+{% block content %}
+<div class="card" style="text-align: center; padding: 60px 20px;">
+    <div style="font-size: 4em; margin-bottom: 20px;">📊</div>
+    <h2 style="margin-bottom: 16px; color: var(--text);">还没有考试数据</h2>
+    <p style="color: var(--text-light); margin-bottom: 30px;">
+        请先导入考试成绩数据，或运行数据生成脚本
+    </p>
+    <div style="display: flex; gap: 16px; justify-content: center;">
+        <a href="/import" class="btn btn-primary">导入数据</a>
+        <a href="#" class="btn btn-outline" onclick="generateSampleData()">生成示例数据</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2>快速开始</h2>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+        <div style="padding: 20px; background: var(--bg); border-radius: 8px;">
+            <h3 style="margin-bottom: 12px; color: var(--primary);">1. 准备数据文件</h3>
+            <p style="color: var(--text-light); font-size: 0.9em;">
+                CSV格式，GBK编码，包含：姓名、数学、英语、物理、化学、生物
+            </p>
+        </div>
+        <div style="padding: 20px; background: var(--bg); border-radius: 8px;">
+            <h3 style="margin-bottom: 12px; color: var(--primary);">2. 导入数据</h3>
+            <p style="color: var(--text-light); font-size: 0.9em;">
+                点击"导入数据"，填写考试信息并上传文件
+            </p>
+        </div>
+        <div style="padding: 20px; background: var(--bg); border-radius: 8px;">
+            <h3 style="margin-bottom: 12px; color: var(--primary);">3. 查看分析</h3>
+            <p style="color: var(--text-light); font-size: 0.9em;">
+                系统自动生成统计报告、图表和排名
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function generateSampleData() {
+    if (confirm('确定要生成示例考试数据吗？这将创建4次模拟考试。')) {
+        window.location.href = '/generate-sample';
+    }
+}
+</script>
+{% endblock %}

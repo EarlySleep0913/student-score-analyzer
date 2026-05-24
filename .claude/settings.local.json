@@ -8,7 +8,9 @@
       "Bash(python app.py)",
       "Bash(git add *)",
       "Bash(git commit -m '添加 Flask Web 界面 *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(git commit -m '全面升级 Web 界面 *)",
+      "Bash(python create_exam_data.py)"
     ]
   }
 }

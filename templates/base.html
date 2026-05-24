@@ -84,17 +84,23 @@
             box-shadow: var(--shadow);
         }
 
-        nav ul {
+        .nav-container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav ul {
             display: flex;
             list-style: none;
         }
 
         nav a {
             display: block;
-            padding: 16px 24px;
+            padding: 16px 20px;
             color: var(--text);
             text-decoration: none;
             font-weight: 500;
@@ -106,6 +112,34 @@
             color: var(--primary);
             border-bottom-color: var(--primary);
             background: #f8fafc;
+        }
+
+        .exam-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+        }
+
+        .exam-selector label {
+            font-weight: 500;
+            color: var(--text-light);
+            font-size: 0.9em;
+        }
+
+        .exam-select {
+            padding: 8px 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: white;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .exam-select:focus {
+            outline: none;
+            border-color: var(--primary);
         }
 
         .container {
@@ -260,6 +294,17 @@
             text-decoration: none;
         }
 
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+            text-decoration: none;
+            color: white;
+        }
+
         .chart-container {
             text-align: center;
             margin: 20px 0;
@@ -314,6 +359,7 @@
             gap: 12px;
             margin-bottom: 20px;
             flex-wrap: wrap;
+            align-items: center;
         }
 
         .filter-btn {
@@ -352,10 +398,62 @@
             gap: 24px;
         }
 
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .alert {
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
         @media (max-width: 768px) {
             .grid-2 { grid-template-columns: 1fr; }
             nav ul { flex-wrap: wrap; }
             nav a { padding: 12px 16px; }
+            .nav-container { flex-direction: column; gap: 10px; }
+            .exam-selector { width: 100%; justify-content: center; }
         }
 
         footer {
@@ -380,11 +478,27 @@
     </header>
 
     <nav>
-        <ul>
-            <li><a href="/" class="{% if request.path == '/' %}active{% endif %}">首页总览</a></li>
-            <li><a href="/analysis" class="{% if request.path == '/analysis' %}active{% endif %}">深度分析</a></li>
-            <li><a href="/compare" class="{% if request.path == '/compare' %}active{% endif %}">学生对比</a></li>
-        </ul>
+        <div class="nav-container">
+            <ul>
+                <li><a href="/" class="{% if request.path == '/' %}active{% endif %}">首页总览</a></li>
+                <li><a href="/analysis" class="{% if request.path == '/analysis' %}active{% endif %}">深度分析</a></li>
+                <li><a href="/compare" class="{% if request.path == '/compare' %}active{% endif %}">学生对比</a></li>
+                <li><a href="/trend" class="{% if request.path == '/trend' %}active{% endif %}">成绩趋势</a></li>
+                <li><a href="/import" class="{% if request.path == '/import' %}active{% endif %}">导入导出</a></li>
+            </ul>
+            {% if exams is defined and exams %}
+            <div class="exam-selector">
+                <label>考试：</label>
+                <select class="exam-select" onchange="switchExam(this.value)">
+                    {% for exam in exams %}
+                    <option value="{{ exam['考试名称'] }}" {% if current_exam and current_exam['考试名称'] == exam['考试名称'] %}selected{% endif %}>
+                        {{ exam['考试名称'] }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+        </div>
     </nav>
 
     <div class="container">
@@ -396,5 +510,13 @@
     </footer>
 
     {% block scripts %}{% endblock %}
+
+    <script>
+        function switchExam(examName) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('exam', examName);
+            window.location.href = url.toString();
+        }
+    </script>
 </body>
 </html>
