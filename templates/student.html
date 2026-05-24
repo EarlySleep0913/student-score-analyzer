@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}{{ student['姓名'] }} - 成绩详情{% endblock %}
+
+{% block header %}{{ student['姓名'] }}的成绩详情{% endblock %}
+{% block subtitle %}<p>排名 第{{ rank }}名 / 共{{ total }}人</p>{% endblock %}
+
+{% block content %}
+<a href="/" class="back-link">← 返回列表</a>
+
+<div class="card">
+    <h2>基本信息</h2>
+    <div class="stats-grid">
+        <div class="stat-item">
+            <div class="stat-value">{{ student['总分'] }}</div>
+            <div class="stat-label">总分</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">{{ student['平均分'] }}</div>
+            <div class="stat-label">平均分</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value grade-{{ student['等级'] }}">{{ student['等级'] }}等</div>
+            <div class="stat-label">等级</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">第{{ rank }}名</div>
+            <div class="stat-label">排名</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h2>各科成绩</h2>
+    <table>
+        <thead>
+            <tr>
+                {% for subj in subjects %}
+                <th>{{ subj }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                {% for subj in subjects %}
+                <td>{{ student[subj] }}</td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h2>成绩雷达图</h2>
+    <div class="chart-container">
+        <img src="/output/{{ radar_file }}" alt="{{ student['姓名'] }}的雷达图">
+    </div>
+</div>
+{% endblock %}

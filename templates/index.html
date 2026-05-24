@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}学生成绩分析系统{% endblock %}
+
+{% block header %}学生成绩分析系统{% endblock %}
+{% block subtitle %}<p>20名学生 · 5科成绩 · 全面分析</p>{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>一、各科统计</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>科目</th>
+                <th>平均分</th>
+                <th>最高分</th>
+                <th>最低分</th>
+                <th>及格率</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for subj, stats in subject_stats.items() %}
+            <tr>
+                <td>{{ subj }}</td>
+                <td>{{ stats['平均分'] }}</td>
+                <td>{{ stats['最高分'] }}</td>
+                <td>{{ stats['最低分'] }}</td>
+                <td>{{ stats['及格率'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h2>二、等级分布</h2>
+    <div class="stats-grid">
+        {% for grade, info in grade_stats.items() %}
+        <div class="stat-item">
+            <div class="stat-value grade-{{ grade }}">{{ grade }}等</div>
+            <div class="stat-label">{{ info['count'] }}人 ({{ "%.1f"|format(info['pct']) }}%)</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="card" id="charts">
+    <h2>三、可视化图表</h2>
+    <div class="chart-container">
+        <h3>各科成绩分布</h3>
+        <img src="/output/score_distribution.png" alt="成绩分布">
+    </div>
+    <div class="chart-container">
+        <h3>各科平均分</h3>
+        <img src="/output/subject_avg.png" alt="各科平均分">
+    </div>
+    <div class="chart-container">
+        <h3>学生总分排名</h3>
+        <img src="/output/total_ranking.png" alt="总分排名">
+    </div>
+    <div class="chart-container">
+        <h3>各科成绩箱线图</h3>
+        <img src="/output/score_boxplot.png" alt="箱线图">
+    </div>
+    <div class="chart-container">
+        <h3>各科成绩相关性</h3>
+        <img src="/output/correlation_heatmap.png" alt="相关性热力图">
+    </div>
+</div>
+
+<div class="card" id="students">
+    <h2>四、学生成绩列表</h2>
+    <p style="margin-bottom: 15px; color: #888;">点击学生姓名查看详情</p>
+    <table>
+        <thead>
+            <tr>
+                <th>排名</th>
+                <th>姓名</th>
+                {% for subj in subjects %}
+                <th>{{ subj }}</th>
+                {% endfor %}
+                <th>总分</th>
+                <th>平均分</th>
+                <th>等级</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td><a href="/student/{{ student['姓名'] }}">{{ student['姓名'] }}</a></td>
+                {% for subj in subjects %}
+                <td>{{ student[subj] }}</td>
+                {% endfor %}
+                <td>{{ student['总分'] }}</td>
+                <td>{{ student['平均分'] }}</td>
+                <td class="grade-{{ student['等级'] }}">{{ student['等级'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

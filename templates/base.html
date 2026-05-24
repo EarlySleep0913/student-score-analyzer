@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}学生成绩分析{% endblock %}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Microsoft YaHei', sans-serif; background: #f5f5f5; color: #333; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px 0; margin-bottom: 30px; }
+        header h1 { text-align: center; font-size: 2em; }
+        header p { text-align: center; opacity: 0.9; margin-top: 10px; }
+        nav { background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        nav a { color: #667eea; text-decoration: none; margin-right: 20px; font-weight: 500; }
+        nav a:hover { text-decoration: underline; }
+        .card { background: white; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .card h2 { color: #667eea; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #f0f0f0; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; font-weight: 600; color: #555; }
+        tr:hover { background: #f5f5f5; }
+        a { color: #667eea; }
+        .grade-A { color: #4CAF50; font-weight: bold; }
+        .grade-B { color: #2196F3; font-weight: bold; }
+        .grade-C { color: #FF9800; font-weight: bold; }
+        .grade-D { color: #F44336; font-weight: bold; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .stat-item { background: #f8f9fa; padding: 15px; border-radius: 6px; text-align: center; }
+        .stat-value { font-size: 1.5em; font-weight: bold; color: #667eea; }
+        .stat-label { color: #888; margin-top: 5px; }
+        .chart-container { text-align: center; margin: 20px 0; }
+        .chart-container img { max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .back-link { display: inline-block; margin-bottom: 20px; color: #667eea; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>{% block header %}学生成绩分析系统{% endblock %}</h1>
+            {% block subtitle %}{% endblock %}
+        </div>
+    </header>
+    <div class="container">
+        <nav>
+            <a href="/">首页</a>
+            <a href="/#charts">查看图表</a>
+            <a href="/#students">学生列表</a>
+        </nav>
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
