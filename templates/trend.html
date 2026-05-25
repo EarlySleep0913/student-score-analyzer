@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}成绩趋势 - 学生成绩分析系统{% endblock %}
+{% block title %}成绩趋势{% endblock %}
 
-{% block header %}成绩趋势分析{% endblock %}
-{% block subtitle %}<p>查看多次考试的成绩变化</p>{% endblock %}
+{% block header %}成绩趋势{% endblock %}
+{% block subtitle %}<p>多次考试的成绩变化</p>{% endblock %}
 
 {% block content %}
 <div class="card">
@@ -21,7 +21,7 @@
 {% if trend_data %}
 <div class="card">
     <div class="card-header">
-        <h2>{% if current_student %}{{ current_student }}{% else %}班级平均{% endif %}的成绩趋势</h2>
+        <h2>{% if current_student %}{{ current_student }}{% else %}班级平均{% endif %}的趋势</h2>
     </div>
     <table>
         <thead>
@@ -31,17 +31,17 @@
                 <th>{{ subj }}</th>
                 {% endfor %}
                 <th>总分</th>
-                <th>平均分</th>
+                <th>均分</th>
             </tr>
         </thead>
         <tbody>
             {% for data in trend_data %}
             <tr>
-                <td><strong>{{ data['考试'] }}</strong></td>
+                <td style="font-weight: 600;">{{ data['考试'] }}</td>
                 {% for subj in subjects %}
                 <td>{{ data[subj] }}</td>
                 {% endfor %}
-                <td><strong>{{ data['总分'] }}</strong></td>
+                <td style="font-weight: 700; color: var(--amber);">{{ data['总分'] }}</td>
                 <td>{{ data['平均分'] }}</td>
             </tr>
             {% endfor %}
@@ -49,37 +49,38 @@
     </table>
 </div>
 
-<!-- 各科趋势分析 -->
+<!-- 变化分析 -->
 <div class="card">
     <div class="card-header">
-        <h2>各科变化分析</h2>
+        <h2>各科变化</h2>
     </div>
     <div class="stats-grid">
         {% for subj in subjects %}
-        <div class="stat-card" style="background: linear-gradient(135deg, {% if loop.index0 == 0 %}#10b981, #059669{% elif loop.index0 == 1 %}#3b82f6, #2563eb{% elif loop.index0 == 2 %}#f59e0b, #d97706{% elif loop.index0 == 3 %}#8b5cf6, #7c3aed{% else %}#ef4444, #dc2626{% endif %});">
-            <div style="font-size: 1.2em; font-weight: 600; margin-bottom: 12px;">{{ subj }}</div>
+        {% set colors = [('emerald', 'green'), ('sky', 'blue'), ('amber', 'orange'), ('violet', 'violet'), ('rose', 'red')] %}
+        {% set color_name, color_class = colors[loop.index0 % 5] %}
+        <div class="stat-card {{ color_class }}" style="padding: 20px;">
+            <div style="font-weight: 700; margin-bottom: 10px;">{{ subj }}</div>
             {% if trend_data|length >= 2 %}
             {% set first_score = trend_data[0][subj] %}
             {% set last_score = trend_data[-1][subj] %}
             {% set diff = last_score - first_score %}
-            <div style="font-size: 1.5em; font-weight: 700;">
-                {% if diff > 0 %}+{% endif %}{{ diff }}
-            </div>
-            <div style="font-size: 0.9em; opacity: 0.9;">
-                {% if diff > 0 %}↑ 进步{% elif diff < 0 %}↓ 退步{% else %}→ 持平{% endif %}
+            <div style="font-size: 1.8em; font-weight: 900;">{% if diff > 0 %}+{% endif %}{{ diff }}</div>
+            <div style="color: rgba(255,255,255,0.6); font-size: 0.85em;">
+                {% if diff > 0 %}进步{% elif diff < 0 %}退步{% else %}持平{% endif %}
             </div>
             {% else %}
-            <div style="font-size: 0.9em; opacity: 0.9;">需要更多数据</div>
+            <div style="color: rgba(255,255,255,0.5); font-size: 0.85em;">需更多数据</div>
             {% endif %}
         </div>
         {% endfor %}
     </div>
 </div>
 {% else %}
-<div class="card" style="text-align: center; padding: 60px 20px;">
-    <h2 style="margin-bottom: 16px; color: var(--text-light);">暂无趋势数据</h2>
-    <p style="color: var(--text-light);">请先导入多次考试数据</p>
-    <a href="/import" class="btn btn-primary" style="margin-top: 20px;">去导入数据</a>
+<div class="card" style="text-align: center; padding: 60px 24px;">
+    <div style="font-size: 3em; margin-bottom: 16px; opacity: 0.3;">~</div>
+    <h2 style="margin-bottom: 12px; color: var(--text-secondary);">暂无趋势数据</h2>
+    <p style="color: var(--text-muted); margin-bottom: 24px;">请先导入多次考试数据</p>
+    <a href="/import" class="btn btn-primary">去导入</a>
 </div>
 {% endif %}
 {% endblock %}

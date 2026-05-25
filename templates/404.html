@@ -1,16 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}页面未找到 - 学生成绩分析系统{% endblock %}
+{% block title %}404{% endblock %}
 
-{% block header %}页面未找到{% endblock %}
+{% block header %}404{% endblock %}
+{% block subtitle %}<p>页面不存在</p>{% endblock %}
 
 {% block content %}
-<div class="card" style="text-align: center; padding: 60px 20px;">
-    <div style="font-size: 6em; color: var(--text-light); margin-bottom: 20px;">404</div>
-    <h2 style="margin-bottom: 16px; color: var(--text);">抱歉，页面不存在</h2>
-    <p style="color: var(--text-light); margin-bottom: 30px;">
-        您访问的页面可能已被移除或地址错误
-    </p>
+<div class="card" style="text-align: center; padding: 60px 24px;">
+    <div style="font-family: var(--font-display); font-size: 5em; font-weight: 900; color: var(--border-light); margin-bottom: 16px;">404</div>
+    <p style="color: var(--text-muted); margin-bottom: 28px;">您访问的页面可能已被移除或地址错误</p>
     <a href="/" class="btn btn-primary">返回首页</a>
 </div>
 {% endblock %}

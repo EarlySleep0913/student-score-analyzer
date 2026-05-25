@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}导入导出 - 学生成绩分析系统{% endblock %}
+{% block title %}导入导出{% endblock %}
 
-{% block header %}数据导入导出{% endblock %}
-{% block subtitle %}<p>导入新考试数据 · 导出成绩报表</p>{% endblock %}
+{% block header %}数据管理{% endblock %}
+{% block subtitle %}<p>导入新考试 &middot; 导出成绩</p>{% endblock %}
 
 {% block content %}
 {% if success %}
@@ -14,7 +14,7 @@
 {% endif %}
 
 <div class="grid-2">
-    <!-- 导入功能 -->
+    <!-- 导入 -->
     <div class="card">
         <div class="card-header">
             <h2>导入成绩</h2>
@@ -22,75 +22,71 @@
         <form method="POST" action="/import" enctype="multipart/form-data">
             <div class="form-group">
                 <label>考试名称 *</label>
-                <input type="text" name="exam_name" class="form-control" placeholder="例如：期中考试" required>
+                <input type="text" name="exam_name" class="form-control" placeholder="如：期中考试" required>
             </div>
             <div class="form-group">
                 <label>考试日期</label>
                 <input type="date" name="exam_date" class="form-control">
             </div>
             <div class="form-group">
-                <label>考试说明</label>
-                <input type="text" name="exam_desc" class="form-control" placeholder="例如：高一下学期期中考试">
+                <label>说明</label>
+                <input type="text" name="exam_desc" class="form-control" placeholder="如：高一下学期期中">
             </div>
             <div class="form-group">
-                <label>CSV文件 *</label>
+                <label>CSV 文件 *</label>
                 <input type="file" name="file" class="form-control" accept=".csv" required>
-                <p style="margin-top: 8px; color: var(--text-light); font-size: 0.85em;">
-                    文件格式：GBK编码，包含"姓名"和"数学、英语、物理、化学、生物"列
+                <p style="margin-top: 8px; color: var(--text-muted); font-size: 0.82em;">
+                    GBK 编码，含"姓名"及五科列
                 </p>
             </div>
-            <button type="submit" class="btn btn-primary">导入数据</button>
+            <button type="submit" class="btn btn-primary">导入</button>
         </form>
     </div>
 
-    <!-- 导出功能 -->
+    <!-- 导出 -->
     <div class="card">
         <div class="card-header">
             <h2>导出成绩</h2>
         </div>
         {% if exams %}
-        <p style="margin-bottom: 20px; color: var(--text-light);">选择考试批次和导出格式</p>
-
         {% for exam in exams %}
-        <div style="padding: 16px; background: var(--bg); border-radius: 8px; margin-bottom: 12px;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <strong>{{ exam['考试名称'] }}</strong>
-                    <span style="color: var(--text-light); margin-left: 10px;">{{ exam['考试日期'] }}</span>
-                </div>
-                <div>
-                    <a href="/export?exam={{ exam['考试名称'] }}&format=csv" class="btn btn-outline" style="margin-right: 8px;">CSV</a>
-                    <a href="/export?exam={{ exam['考试名称'] }}&format=json" class="btn btn-outline">JSON</a>
-                </div>
+        <div style="padding: 14px 16px; background: var(--bg-surface); border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <strong>{{ exam['考试名称'] }}</strong>
+                <span style="color: var(--text-muted); margin-left: 10px; font-size: 0.85em;">{{ exam['考试日期'] }}</span>
+            </div>
+            <div>
+                <a href="/export?exam={{ exam['考试名称'] }}&format=csv" class="btn btn-outline" style="padding: 6px 14px; font-size: 0.85em;">CSV</a>
+                <a href="/export?exam={{ exam['考试名称'] }}&format=json" class="btn btn-outline" style="padding: 6px 14px; font-size: 0.85em;">JSON</a>
             </div>
         </div>
         {% endfor %}
         {% else %}
-        <p style="color: var(--text-light);">暂无考试数据</p>
+        <p style="color: var(--text-muted);">暂无数据</p>
         {% endif %}
     </div>
 </div>
 
-<!-- 使用说明 -->
+<!-- 说明 -->
 <div class="card">
     <div class="card-header">
         <h2>使用说明</h2>
     </div>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+    <div class="grid-2">
         <div>
-            <h3 style="margin-bottom: 12px; color: var(--primary);">导入格式要求</h3>
-            <ul style="list-style: none; padding: 0;">
-                <li style="padding: 8px 0; border-bottom: 1px solid var(--border);">文件格式：CSV（逗号分隔）</li>
-                <li style="padding: 8px 0; border-bottom: 1px solid var(--border);">编码：GBK（Windows中文系统）</li>
-                <li style="padding: 8px 0; border-bottom: 1px solid var(--border);">必含列：姓名、数学、英语、物理、化学、生物</li>
-                <li style="padding: 8px 0;">成绩范围：0-100</li>
+            <h3 style="margin-bottom: 12px; color: var(--amber); font-family: var(--font-display);">导入格式</h3>
+            <ul style="list-style: none; padding: 0; color: var(--text-secondary); font-size: 0.9em;">
+                <li style="padding: 8px 0; border-bottom: 1px solid var(--border);">CSV（逗号分隔）</li>
+                <li style="padding: 8px 0; border-bottom: 1px solid var(--border);">GBK 编码</li>
+                <li style="padding: 8px 0; border-bottom: 1px solid var(--border);">必含：姓名、数学、英语、物理、化学、生物</li>
+                <li style="padding: 8px 0;">成绩范围 0&ndash;100</li>
             </ul>
         </div>
         <div>
-            <h3 style="margin-bottom: 12px; color: var(--primary);">导出格式说明</h3>
-            <ul style="list-style: none; padding: 0;">
-                <li style="padding: 8px 0; border-bottom: 1px solid var(--border);"><strong>CSV</strong>：通用表格格式，可用Excel打开</li>
-                <li style="padding: 8px 0;"><strong>JSON</strong>：结构化数据，便于程序处理</li>
+            <h3 style="margin-bottom: 12px; color: var(--amber); font-family: var(--font-display);">导出格式</h3>
+            <ul style="list-style: none; padding: 0; color: var(--text-secondary); font-size: 0.9em;">
+                <li style="padding: 8px 0; border-bottom: 1px solid var(--border);"><strong>CSV</strong> &mdash; Excel 可直接打开</li>
+                <li style="padding: 8px 0;"><strong>JSON</strong> &mdash; 结构化数据，便于程序处理</li>
             </ul>
         </div>
     </div>

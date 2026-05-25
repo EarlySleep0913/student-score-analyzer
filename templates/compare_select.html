@@ -1,37 +1,37 @@
 {% extends "base.html" %}
 
-{% block title %}学生对比 - 学生成绩分析系统{% endblock %}
+{% block title %}学生对比 - 选择{% endblock %}
 
-{% block header %}学生对比分析{% endblock %}
-{% block subtitle %}<p>选择2-4名学生进行成绩对比</p>{% endblock %}
+{% block header %}学生对比{% endblock %}
+{% block subtitle %}<p>选择 2&ndash;4 名学生进行对比</p>{% endblock %}
 
 {% block content %}
 <div class="card">
     <div class="card-header">
         <h2>选择对比学生</h2>
-        <span style="color: var(--text-light);">请勾选2-4名学生</span>
+        <span style="color: var(--text-muted); font-size: 0.85em;">勾选 2&ndash;4 人</span>
     </div>
 
     <form id="compareForm" action="/compare" method="get">
-        <div class="filter-bar" style="margin-bottom: 20px;">
-            <input type="text" class="search-box" id="searchInput" placeholder="搜索学生姓名...">
-            <button type="button" class="filter-btn active" onclick="filterGrade('all')">全部</button>
-            <button type="button" class="filter-btn" onclick="filterGrade('A')">A 优秀</button>
-            <button type="button" class="filter-btn" onclick="filterGrade('B')">B 良好</button>
-            <button type="button" class="filter-btn" onclick="filterGrade('C')">C 中等</button>
-            <button type="button" class="filter-btn" onclick="filterGrade('D')">D 及格</button>
+        <div class="filter-bar">
+            <input type="text" class="search-box" id="searchInput" placeholder="搜索姓名...">
+            <button type="button" class="filter-btn active" onclick="filterGrade('all', event)">全部</button>
+            <button type="button" class="filter-btn" onclick="filterGrade('A', event)">A</button>
+            <button type="button" class="filter-btn" onclick="filterGrade('B', event)">B</button>
+            <button type="button" class="filter-btn" onclick="filterGrade('C', event)">C</button>
+            <button type="button" class="filter-btn" onclick="filterGrade('D', event)">D</button>
         </div>
 
         <table>
             <thead>
                 <tr>
-                    <th style="width: 50px;">选择</th>
+                    <th style="width: 44px;">选</th>
                     <th>姓名</th>
                     {% for subj in subjects %}
                     <th>{{ subj }}</th>
                     {% endfor %}
                     <th>总分</th>
-                    <th>平均分</th>
+                    <th>均分</th>
                     <th>等级</th>
                 </tr>
             </thead>
@@ -40,14 +40,14 @@
                 <tr class="student-row" data-grade="{{ student['等级'] }}" data-name="{{ student['姓名'] }}">
                     <td>
                         <input type="checkbox" name="name" value="{{ student['姓名'] }}"
-                               style="width: 18px; height: 18px; cursor: pointer;"
+                               style="width: 16px; height: 16px; cursor: pointer; accent-color: var(--amber);"
                                onchange="updateSelection()">
                     </td>
-                    <td><strong>{{ student['姓名'] }}</strong></td>
+                    <td style="font-weight: 600;">{{ student['姓名'] }}</td>
                     {% for subj in subjects %}
                     <td>{{ student[subj] }}</td>
                     {% endfor %}
-                    <td><strong>{{ student['总分'] }}</strong></td>
+                    <td style="font-weight: 700; color: var(--amber);">{{ student['总分'] }}</td>
                     <td>{{ student['平均分'] }}</td>
                     <td><span class="badge badge-{{ student['等级'] }}">{{ student['等级'] }}</span></td>
                 </tr>
@@ -55,11 +55,9 @@
             </tbody>
         </table>
 
-        <div style="margin-top: 24px; text-align: center;">
-            <p id="selectionCount" style="margin-bottom: 12px; color: var(--text-light);">已选择 0 名学生</p>
-            <button type="submit" class="btn btn-primary" id="compareBtn" disabled>
-                开始对比
-            </button>
+        <div style="margin-top: 28px; text-align: center;">
+            <p id="selectionCount" style="margin-bottom: 14px; color: var(--text-muted); font-size: 0.9em;">已选 0 人</p>
+            <button type="submit" class="btn btn-primary" id="compareBtn" disabled>开始对比</button>
         </div>
     </form>
 </div>
@@ -70,43 +68,29 @@
 function updateSelection() {
     const checked = document.querySelectorAll('input[name="name"]:checked');
     const count = checked.length;
-    document.getElementById('selectionCount').textContent = `已选择 ${count} 名学生`;
+    document.getElementById('selectionCount').textContent = `已选 ${count} 人`;
     document.getElementById('compareBtn').disabled = count < 2;
-
     if (count > 4) {
         checked[checked.length - 1].checked = false;
-        alert('最多选择4名学生');
+        alert('最多选4人');
         updateSelection();
     }
 }
 
-function filterGrade(grade) {
+function filterGrade(grade, e) {
     const rows = document.querySelectorAll('.student-row');
     const buttons = document.querySelectorAll('.filter-btn');
-
     buttons.forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-
+    if (e) e.target.classList.add('active');
     rows.forEach(row => {
-        if (grade === 'all' || row.dataset.grade === grade) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
+        row.style.display = (grade === 'all' || row.dataset.grade === grade) ? '' : 'none';
     });
 }
 
 document.getElementById('searchInput').addEventListener('input', function(e) {
-    const search = e.target.value.toLowerCase();
-    const rows = document.querySelectorAll('.student-row');
-
-    rows.forEach(row => {
-        const name = row.dataset.name.toLowerCase();
-        if (name.includes(search)) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
+    const q = e.target.value.toLowerCase();
+    document.querySelectorAll('.student-row').forEach(row => {
+        row.style.display = row.dataset.name.toLowerCase().includes(q) ? '' : 'none';
     });
 });
 </script>

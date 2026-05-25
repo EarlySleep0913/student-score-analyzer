@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}深度分析 - 学生成绩分析系统{% endblock %}
+{% block title %}深度分析 - 学生成绩分析{% endblock %}
 
-{% block header %}班级成绩深度分析{% endblock %}
-{% block subtitle %}<p>多维度统计 · 相关性分析 · 成绩分布</p>{% endblock %}
+{% block header %}深度分析{% endblock %}
+{% block subtitle %}<p>统计指标 · 相关性 · 分布</p>{% endblock %}
 
 {% block content %}
-<!-- 统计概览 -->
+<!-- 统计指标 -->
 <div class="card">
     <div class="card-header">
         <h2>各科统计指标</h2>
@@ -18,18 +18,18 @@
                 <th>平均分</th>
                 <th>中位数</th>
                 <th>标准差</th>
-                <th>最高分</th>
-                <th>最低分</th>
-                <th>分差</th>
+                <th>最高</th>
+                <th>最低</th>
+                <th>极差</th>
             </tr>
         </thead>
         <tbody>
             {% for subj, stats in subject_stats.items() %}
             <tr>
-                <td><strong>{{ subj }}</strong></td>
+                <td style="font-weight: 600;">{{ subj }}</td>
                 <td>{{ stats.mean }}</td>
                 <td>{{ stats.median }}</td>
-                <td>{{ stats.std }}</td>
+                <td style="color: var(--text-muted);">{{ stats.std }}</td>
                 <td class="grade-A">{{ stats.max }}</td>
                 <td class="grade-D">{{ stats.min }}</td>
                 <td>{{ stats.max - stats.min }}</td>
@@ -39,11 +39,11 @@
     </table>
 </div>
 
-<!-- 相关性分析 -->
+<!-- 相关性矩阵 -->
 <div class="card">
     <div class="card-header">
-        <h2>科目相关性矩阵</h2>
-        <span style="color: var(--text-light);">数值越接近1，相关性越强</span>
+        <h2>相关性矩阵</h2>
+        <span style="color: var(--text-muted); font-size: 0.85em;">越接近 1 相关性越强</span>
     </div>
     <div style="overflow-x: auto;">
         <table>
@@ -58,9 +58,9 @@
             <tbody>
                 {% for subj1 in subjects %}
                 <tr>
-                    <td><strong>{{ subj1 }}</strong></td>
+                    <td style="font-weight: 600;">{{ subj1 }}</td>
                     {% for subj2 in subjects %}
-                    <td style="background: rgba(99, 102, 241, {{ corr[subj1][subj2] * 0.3 }}); font-weight: {% if corr[subj1][subj2] > 0.7 %}700{% else %}400{% endif %};">
+                    <td style="text-align: center; background: rgba(245,158,11, {{ corr[subj1][subj2] * 0.2 }}); font-weight: {% if corr[subj1][subj2] > 0.7 %}700{% else %}400{% endif %}; color: {% if corr[subj1][subj2] > 0.7 %}var(--amber){% else %}var(--text-secondary){% endif %};">
                         {{ corr[subj1][subj2] }}
                     </td>
                     {% endfor %}
@@ -71,28 +71,22 @@
     </div>
 </div>
 
+<!-- TOP / BOTTOM -->
 <div class="grid-2">
-    <!-- TOP 5 -->
     <div class="card">
         <div class="card-header">
-            <h2>成绩优秀 TOP 5</h2>
+            <h2>优秀 TOP 5</h2>
         </div>
         <table>
             <thead>
-                <tr>
-                    <th>排名</th>
-                    <th>姓名</th>
-                    <th>总分</th>
-                    <th>平均分</th>
-                    <th>等级</th>
-                </tr>
+                <tr><th>#</th><th>姓名</th><th>总分</th><th>均分</th><th>等级</th></tr>
             </thead>
             <tbody>
                 {% for s in top5 %}
                 <tr>
-                    <td><strong>{{ loop.index }}</strong></td>
+                    <td style="color: var(--amber); font-weight: 700;">{{ loop.index }}</td>
                     <td><a href="/student/{{ s['姓名'] }}">{{ s['姓名'] }}</a></td>
-                    <td>{{ s['总分'] }}</td>
+                    <td style="font-weight: 600;">{{ s['总分'] }}</td>
                     <td>{{ s['平均分'] }}</td>
                     <td><span class="badge badge-{{ s['等级'] }}">{{ s['等级'] }}</span></td>
                 </tr>
@@ -101,27 +95,20 @@
         </table>
     </div>
 
-    <!-- BOTTOM 5 -->
     <div class="card">
         <div class="card-header">
-            <h2>需要提升 BOTTOM 5</h2>
+            <h2>需提升 BOTTOM 5</h2>
         </div>
         <table>
             <thead>
-                <tr>
-                    <th>排名</th>
-                    <th>姓名</th>
-                    <th>总分</th>
-                    <th>平均分</th>
-                    <th>等级</th>
-                </tr>
+                <tr><th>#</th><th>姓名</th><th>总分</th><th>均分</th><th>等级</th></tr>
             </thead>
             <tbody>
                 {% for s in bottom5 %}
                 <tr>
-                    <td><strong>{{ loop.index }}</strong></td>
+                    <td style="color: var(--text-muted);">{{ loop.index }}</td>
                     <td><a href="/student/{{ s['姓名'] }}">{{ s['姓名'] }}</a></td>
-                    <td>{{ s['总分'] }}</td>
+                    <td style="font-weight: 600;">{{ s['总分'] }}</td>
                     <td>{{ s['平均分'] }}</td>
                     <td><span class="badge badge-{{ s['等级'] }}">{{ s['等级'] }}</span></td>
                 </tr>
@@ -131,26 +118,22 @@
     </div>
 </div>
 
-<!-- 各等级学生分布 -->
+<!-- 各等级名单 -->
 <div class="card">
     <div class="card-header">
-        <h2>各等级学生名单</h2>
+        <h2>各等级学生</h2>
     </div>
-
     {% for grade, students in grade_students.items() %}
-    <div style="margin-bottom: 24px;">
-        <h3 style="margin-bottom: 12px; color: {{ grade_colors[grade] }};">
-            {{ grade }}等 ({{ grade_labels[grade] }}) - {{ students|length }}人
+    <div style="margin-bottom: 28px;">
+        <h3 style="margin-bottom: 14px; font-family: var(--font-display); color: {{ grade_colors[grade] }};">
+            {{ grade }}等 · {{ grade_labels[grade] }}（{{ students|length }}人）
         </h3>
         <div class="stats-grid">
             {% for s in students %}
             <a href="/student/{{ s['姓名'] }}" style="text-decoration: none;">
-                <div style="background: white; border: 2px solid {{ grade_colors[grade] }}20; border-radius: 8px; padding: 12px; text-align: center; transition: all 0.2s;"
-                     onmouseover="this.style.borderColor='{{ grade_colors[grade] }}'; this.style.transform='translateY(-2px)'"
-                     onmouseout="this.style.borderColor='{{ grade_colors[grade] }}20'; this.style.transform='translateY(0)'">
-                    <div style="font-weight: 600; color: var(--text);">{{ s['姓名'] }}</div>
-                    <div style="color: var(--text-light); font-size: 0.9em;">总分 {{ s['总分'] }}</div>
-                    <div style="color: var(--text-light); font-size: 0.85em;">平均 {{ s['平均分'] }}</div>
+                <div class="stat-card {{ 'green' if grade == 'A' else 'blue' if grade == 'B' else 'orange' if grade == 'C' else 'red' }}" style="padding: 16px;">
+                    <div style="font-weight: 700; font-size: 1.1em; margin-bottom: 4px;">{{ s['姓名'] }}</div>
+                    <div style="color: rgba(255,255,255,0.7); font-size: 0.85em;">{{ s['总分'] }}分 &middot; 均{{ s['平均分'] }}</div>
                 </div>
             </a>
             {% endfor %}
@@ -162,15 +145,15 @@
 <!-- 图表 -->
 <div class="card">
     <div class="card-header">
-        <h2>可视化图表</h2>
+        <h2>可视化</h2>
     </div>
     <div class="grid-2">
         <div class="chart-container">
-            <h3 style="margin-bottom: 16px; color: var(--text-light);">成绩箱线图</h3>
+            <h3 style="margin-bottom: 14px; color: var(--text-muted); font-size: 0.9em;">箱线图</h3>
             <img src="/output/score_boxplot.png" alt="箱线图">
         </div>
         <div class="chart-container">
-            <h3 style="margin-bottom: 16px; color: var(--text-light);">成绩分布</h3>
+            <h3 style="margin-bottom: 14px; color: var(--text-muted); font-size: 0.9em;">成绩分布</h3>
             <img src="/output/score_distribution.png" alt="成绩分布">
         </div>
     </div>

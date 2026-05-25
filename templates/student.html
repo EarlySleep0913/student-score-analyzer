@@ -2,22 +2,22 @@
 
 {% block title %}{{ student['姓名'] }} - 成绩详情{% endblock %}
 
-{% block header %}{{ student['姓名'] }}的成绩档案{% endblock %}
+{% block header %}{{ student['姓名'] }}{% endblock %}
 {% block subtitle %}
 <p>
-    <span class="badge badge-{{ student['等级'] }}" style="font-size: 1.1em; padding: 6px 16px;">
+    <span class="badge badge-{{ student['等级'] }}" style="font-size: 1em; padding: 5px 14px;">
         {{ student['等级'] }}等 · {{ student['等级标签'] }}
     </span>
-    &nbsp;&nbsp;排名 第{{ rank }}名 / 共{{ total }}人
+    <span style="margin-left: 12px; color: var(--text-muted);">第{{ rank }}名 / 共{{ total }}人</span>
 </p>
 {% endblock %}
 
 {% block content %}
-<a href="/" class="back-link">← 返回学生列表</a>
+<a href="/" class="back-link">&larr; 返回列表</a>
 
-<!-- 基本信息卡片 -->
-<div class="stats-grid" style="margin-bottom: 24px;">
-    <div class="stat-card">
+<!-- 概览 -->
+<div class="stats-grid" style="margin-bottom: 28px;">
+    <div class="stat-card orange">
         <div class="stat-value">{{ student['总分'] }}</div>
         <div class="stat-label">总分</div>
     </div>
@@ -26,11 +26,11 @@
         <div class="stat-label">平均分</div>
     </div>
     <div class="stat-card blue">
-        <div class="stat-value">第{{ rank }}名</div>
+        <div class="stat-value">{{ rank }}</div>
         <div class="stat-label">班级排名</div>
     </div>
     <div class="stat-card {% if student['等级'] == 'A' %}green{% elif student['等级'] == 'B' %}blue{% elif student['等级'] == 'C' %}orange{% else %}red{% endif %}">
-        <div class="stat-value">{{ student['等级'] }}等</div>
+        <div class="stat-value">{{ student['等级'] }}</div>
         <div class="stat-label">{{ student['等级标签'] }}</div>
     </div>
 </div>
@@ -46,20 +46,20 @@
                 <tr>
                     <th>科目</th>
                     <th>分数</th>
-                    <th>班级排名</th>
-                    <th>与平均分差</th>
+                    <th>排名</th>
+                    <th>与均分差</th>
                 </tr>
             </thead>
             <tbody>
                 {% for subj in subjects %}
                 <tr>
-                    <td><strong>{{ subj }}</strong></td>
+                    <td style="font-weight: 600;">{{ subj }}</td>
                     <td>
                         <span class="{% if student[subj] >= 90 %}grade-A{% elif student[subj] >= 80 %}grade-B{% elif student[subj] >= 60 %}grade-C{% else %}grade-D{% endif %}">
                             {{ student[subj] }}
                         </span>
                     </td>
-                    <td>第{{ subject_ranks[subj] }}名</td>
+                    <td style="color: var(--text-muted);">第{{ subject_ranks[subj] }}名</td>
                     <td>
                         <span class="{% if avg_diff[subj] >= 0 %}grade-A{% else %}grade-D{% endif %}">
                             {% if avg_diff[subj] >= 0 %}+{% endif %}{{ avg_diff[subj] }}
@@ -74,12 +74,12 @@
     <!-- 雷达图 -->
     <div class="card">
         <div class="card-header">
-            <h2>成绩雷达图</h2>
+            <h2>雷达图</h2>
         </div>
         <div class="chart-container">
             <img src="/output/{{ radar_file }}" alt="{{ student['姓名'] }}的雷达图">
-            <p style="margin-top: 12px; color: var(--text-light); font-size: 0.9em;">
-                灰色虚线为班级平均分
+            <p style="margin-top: 10px; color: var(--text-muted); font-size: 0.82em;">
+                灰色虚线为班级平均
             </p>
         </div>
     </div>
@@ -90,14 +90,14 @@
 <div class="card">
     <div class="card-header">
         <h2>水平相近的同学</h2>
-        <span style="color: var(--text-light);">总分差距在30分以内</span>
+        <span style="color: var(--text-muted); font-size: 0.85em;">总分差距 &le; 30分</span>
     </div>
     <div class="stats-grid">
         {% for s in similar_students %}
         <a href="/student/{{ s['姓名'] }}" style="text-decoration: none;">
-            <div class="stat-card" style="cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                <div class="stat-value">{{ s['姓名'] }}</div>
-                <div class="stat-label">总分 {{ s['总分'] }} · {{ s['等级'] }}等</div>
+            <div class="stat-card" style="cursor: pointer;">
+                <div class="stat-value" style="font-size: 1.6em;">{{ s['姓名'] }}</div>
+                <div class="stat-label">总分 {{ s['总分'] }} &middot; {{ s['等级'] }}等</div>
             </div>
         </a>
         {% endfor %}
@@ -105,10 +105,10 @@
 </div>
 {% endif %}
 
-<!-- 操作按钮 -->
-<div class="card" style="text-align: center;">
-    <p style="margin-bottom: 16px; color: var(--text-light);">想要了解更多？</p>
-    <a href="/compare?name={{ student['姓名'] }}" class="btn btn-outline" style="margin: 0 8px;">与其他同学对比</a>
-    <a href="/analysis" class="btn btn-primary" style="margin: 0 8px;">查看班级分析</a>
+<!-- 操作 -->
+<div class="card" style="text-align: center; padding: 32px;">
+    <p style="margin-bottom: 16px; color: var(--text-muted);">进一步分析</p>
+    <a href="/compare?name={{ student['姓名'] }}" class="btn btn-outline" style="margin: 0 8px;">对比其他同学</a>
+    <a href="/analysis" class="btn btn-primary" style="margin: 0 8px;">班级深度分析</a>
 </div>
 {% endblock %}
